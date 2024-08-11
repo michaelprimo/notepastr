@@ -1,0 +1,48 @@
+<div class="">
+  <h1 class="text-5xl font-bold text-custom-white px-5 pt-5">Notepastr</h1>
+  <div class="p-5">
+    <div>
+      <input [(ngModel)]="newNoteTemplate" placeholder="Inserisci la base delle prossime note" class="border-custom-blue border-2 bg-custom-black text-custom-white p-1" />
+    </div>
+    <div>
+      <input [(ngModel)]="newNote" placeholder="Inserisci una nuova nota" class="border-custom-blue border-2 bg-custom-black text-custom-white p-1" />
+    </div>
+    <div>
+      <button (click)="addNote()" class="border-custom-blue border-2 bg-custom-purple p-2">Aggiungi Nota</button>
+      <button (click)="sortNoteAscending()" class="mx-2 border-custom-blue border-2 bg-custom-purple p-2" >Visualizza le note {{isAscendingOrder ? 'più recenti' : 'meno recenti'}}</button>
+      <button (click)="sortNoteAlphabetically()" class="mx-2 border-custom-blue border-2 bg-custom-purple p-2" >Visualizza le note {{isAscendingOrder ? 'dalla A-Z' : 'dalla Z-A'}}</button>
+    </div>
+  </div>
+ 
+  <h1 class="text-3xl p-5">Note</h1>
+
+  <ul>
+    @for(todo of todos; track todo.id)
+    {
+      <li>
+        @if(editNoteId !== todo.id)
+        {
+          <div class="border-custom-blue border-2 my-2">
+            <span>{{ todo.note }}</span>
+            <div>
+              <button (click)="copyToClipboard(todo.note)" class="border-custom-blue border-2 bg-custom-purple p-2 mx-2">Copia</button>
+              <button (click)="editNote(todo)" class="border-custom-blue border-2 bg-custom-purple p-2 mx-2">Modifica</button>
+              <button (click)="deleteNote(todo.id)" class="border-custom-blue border-2 bg-custom-purple p-2 mx-2">Cancella</button>
+            </div>
+          </div>
+        }
+        
+        @if(editNoteId === todo.id)
+        {
+        <div>
+          <input [(ngModel)]="editNoteText" class="border-custom-blue border-2 bg-custom-black text-custom-white p-1" />
+          <button (click)="saveNote()" class="border-custom-blue border-2 bg-custom-purple p-2 mx-2">Salva</button>
+          <button (click)="editNoteId = null" class="border-custom-blue border-2 bg-custom-purple p-2 mx-2">Annulla</button>
+        </div>
+        }
+      </li>
+    }
+    
+  </ul>
+</div>
+

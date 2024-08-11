@@ -1,0 +1,50 @@
+ 
+💻 Angular: integrazione di Tailwind CSS, palette e miglioramento grafico 💻
+
+Come persona che punta a migliorarsi a livello di conoscenze del Frontend Development,
+lavorare alla grafica di una applicazione è qualcosa da fare molto spesso.
+
+Per prima cosa, ho installato Tailwind CSS, un framework che ho usato anche per il mio
+sito web e che reputo molto utile.
+
+Dal prompt dei comandi sono andato nella cartella del mio progetto e ho inserito queste
+due righe da far avviare per l'installazione di Tailwind:
+
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init
+
+Dopodichè sono andato a modificare il file tailwind.config.js in questa maniera:
+
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./src/**/*.{html,ts}",
+  ],
+  theme: {
+    colors: {
+      'custom-white': '#e7dfdd',
+      'custom-blue': '#4717f6',
+      'custom-purple': '#a239ca',
+      'custom-black': '#0e0b16',
+    },
+  },
+  plugins: [],
+}
+
+Infine, su styles.css che è il CSS globale dell'applicazione, ho inserito queste tre righe per abilitare Tailwind in tutti gli altri CSS una volta sola:
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+Ho aggiunto inoltre una palette customizzata.
+La palette l'ho presa da questo articolo di Canva, essendo un amante del neon e del blu (colore che indica
+calma e saggezza), ho preferito integrare la seconda palette che ho visto: https://www.canva.com/learn/website-color-schemes/
+Per le palette per i giochi uso Lospec e la sua corposa lista, ma dopo degli esperimenti fallimentari mi sono rivolto a quell'articolo.
+
+Dopo un pò di modifiche, ecco come si vede l'applicazione ora, il risultato è sia visibile nell'immagine qui sotto e sia 
+online sul mio sito: https://www.michaelprimo.it/src/content/notepastr/index.html .
+Vi auguro una buona domenica, riposatevi e passatela con le persone a voi più care.
+
+#Innovation #Management #DigitalMarketing #Technology #Creativity #Future #Javascript
+

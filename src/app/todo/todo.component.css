@@ -1,0 +1,27 @@
+.todo-container {
+    max-width: 50%;
+    margin: 0 auto;
+  }
+  
+  input[type='text'] {
+    width: 90%;
+    padding: 8px;
+    margin-bottom: 10px;
+  }
+  
+  input
+  {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  button
+  {
+    margin-top: 10px;
+  }
+
+  ul
+  {
+    padding: 20px;
+  }
