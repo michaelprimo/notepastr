@@ -1,50 +1,44 @@
  
-💻 Angular: integrazione di Tailwind CSS, palette e miglioramento grafico 💻
+💻 Angular: basi per creare liste di liste e ulteriori filtri 💻
 
-Come persona che punta a migliorarsi a livello di conoscenze del Frontend Development,
-lavorare alla grafica di una applicazione è qualcosa da fare molto spesso.
+Come mi hanno consigliato delle persone che hanno cominciato ad utilizzare l'app,
+sarebbe consigliato inserire liste di liste, così mi sono messo al lavoro.
 
-Per prima cosa, ho installato Tailwind CSS, un framework che ho usato anche per il mio
-sito web e che reputo molto utile.
+Attualmente ho solo in mano una base, tuttavia ho creato un ID con la lista attuale e
+poi una base della futura lista di liste:
 
-Dal prompt dei comandi sono andato nella cartella del mio progetto e ho inserito queste
-due righe da far avviare per l'installazione di Tailwind:
-
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init
-
-Dopodichè sono andato a modificare il file tailwind.config.js in questa maniera:
-
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: [
-    "./src/**/*.{html,ts}",
-  ],
-  theme: {
-    colors: {
-      'custom-white': '#e7dfdd',
-      'custom-blue': '#4717f6',
-      'custom-purple': '#a239ca',
-      'custom-black': '#0e0b16',
-    },
-  },
-  plugins: [],
+// Creiamo la base delle nostre note.
+interface Todo {
+  id: number;
+  note: string;  
 }
 
-Infine, su styles.css che è il CSS globale dell'applicazione, ho inserito queste tre righe per abilitare Tailwind in tutti gli altri CSS una volta sola:
+//Creiamo la base della lista di liste
+interface NoteList 
+{
+  list_id: number;
+  name: string;
+  noteData: Todo[];
+}
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+Poi si crea una variabile che sfrutti NoteList come se fosse un tipo, si crea un template con dei dati di prova
+(nel mio caso ho simulato una lista di note principale e un cestino) e poi si devono cambiare delle istruzioni nel
+codice.
 
-Ho aggiunto inoltre una palette customizzata.
-La palette l'ho presa da questo articolo di Canva, essendo un amante del neon e del blu (colore che indica
-calma e saggezza), ho preferito integrare la seconda palette che ho visto: https://www.canva.com/learn/website-color-schemes/
-Per le palette per i giochi uso Lospec e la sua corposa lista, ma dopo degli esperimenti fallimentari mi sono rivolto a quell'articolo.
+Non ci sarà più un semplice for che itera una lista di stringhe e l'inserimento, oltre alla loro cancellazione
+e modifica di note sarà più verboso come si può comprendere dall'esempio in basso:
 
-Dopo un pò di modifiche, ecco come si vede l'applicazione ora, il risultato è sia visibile nell'immagine qui sotto e sia 
-online sul mio sito: https://www.michaelprimo.it/src/content/notepastr/index.html .
-Vi auguro una buona domenica, riposatevi e passatela con le persone a voi più care.
+//vecchio e attuale metodo per inserire i dati
+this.todos.push(newTodo);
+//futuro metodo per inserire i dati
+this.noteLists[this.current_list].noteData.push(newTodo);
 
-#Innovation #Management #DigitalMarketing #Technology #Creativity #Future #Javascript
+Devo inoltre inserire dei modali, che mi saranno utili sia per confermare la cancellazione di una nota e sia
+per scegliere una lista di liste senza problemi. Inoltre ho creato un ulteriore filtro che ordina le note in 
+ordine alfabetico (anche essi necessitano di una lista per evitare di creare molteplici bottoni con un solo filtro).
 
+Inoltre, mi sto preparando per caricare il progetto su Github, quindi in futuro vi linkerò la repo.
+Vi auguro una buona settimana lavorativa e un buon lavoro, statemi bene. Anche questa settimana passerà velocemente 
+
+#Innovation #Management #DigitalMarketing #Technology #Creativity #Future #Javascript 👋
+ 

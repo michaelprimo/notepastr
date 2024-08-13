@@ -54,6 +54,28 @@ export class TodoComponent implements OnInit {
   isAscendingOrder: boolean = false;
   // Variabile per tracciare l'ordine alfabetico
   isAlphabeticalOrder: boolean = false;
+  // Aggiungi questa proprietà per gestire la visibilità del modale
+  isModalVisible: boolean = false;
+  isModalVisible_cancel: boolean = false;
+  noteIdToDelete: number | null = null;
+
+  openModal() {
+    this.isModalVisible = true;
+  }
+
+  closeModal() {
+    this.isModalVisible = false;
+  }
+
+  openModal_cancel(id: number) {
+    this.isModalVisible_cancel = true;
+    this.noteIdToDelete = id; 
+  }
+
+  closeModal_cancel() {
+    this.isModalVisible_cancel = false;
+    this.noteIdToDelete = null;
+  }
 
   //carichiamo tutte le informazioni presenti in LocalStorage appena viene caricato.
   ngOnInit() 
@@ -82,9 +104,14 @@ export class TodoComponent implements OnInit {
   }
 
   //questa funzione genera un nuovo array senza la nota con l'id passato e salva la cancellazione di essa.
-  deleteNote(id: number) {
-    this.todos = this.todos.filter(todo => todo.id !== id);
-    this.saveTodos();
+  deleteNote() 
+  {
+    if(this.noteIdToDelete !== null)
+    {
+      this.todos = this.todos.filter(todo => todo.id !== this.noteIdToDelete);
+      this.saveTodos();
+    }
+    
   }
 
   //settiamo il necessario per modificare l'interfaccia e modificare una nota dopo averla immessa
