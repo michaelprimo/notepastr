@@ -9,3 +9,5 @@ Notepastr è un'applicazione open source sviluppata con Angular che permette agl
 - **Creazione di Note**: Aggiungi note, frasi o parole che utilizzi frequentemente.
 - **Gestione delle Note**: Modifica ed elimina note esistenti.
 - **Copia con un Click**: Copia qualsiasi nota con un solo clic.
+- **Creazione di Liste di note**: Organizza le tue note in liste.
+- **Gestione delle Liste di note**: Modifica ed elimina liste di note esistenti.
