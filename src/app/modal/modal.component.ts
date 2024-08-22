@@ -6,18 +6,18 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./modal.component.css'],
 })
 export class ModalComponent {
-  @Input() isVisible: boolean = false;
   @Input() isVisible_cancel: boolean = false;
+  @Input() isVisible_cancelList: boolean = false;
   @Output() close = new EventEmitter<void>();
   @Output() confirmDelete = new EventEmitter<void>(); // Evento per confermare la cancellazione
 
-  closeModal() {
-    this.isVisible = false;
+  closeModal_cancel() {
+    this.isVisible_cancel = false;
     this.close.emit();
   }
 
-  closeModal_cancel() {
-    this.isVisible_cancel = false;
+  closeModal_cancelList() {
+    this.isVisible_cancelList = false;
     this.close.emit();
   }
 

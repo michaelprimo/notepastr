@@ -21,10 +21,9 @@ interface NoteList
 })
 
 export class TodoComponent implements OnInit {
-  //il vecchio e attuale metodo per immagazzinare tutte le note in una lista unica
-  todos: Todo[] = [];
-  //il futuro metodo per immagazzinare liste di liste. Ho inserito un template iniziale.
-  noteLists: NoteList[] = [
+  //Variabile per immagazzinare liste di liste.
+  noteLists: NoteList[] = 
+  [
     {
       list_id: 0,
       name: "La mia prima lista",
@@ -40,34 +39,36 @@ export class TodoComponent implements OnInit {
       ]
     }
   ];
-  //l'ID che rappresenta la lista attuale. Attualmente non avrà un utilizzo, ma lo avrà il più presto possibile.
-  current_list: number = 1;
+  //l'ID che rappresenta l'indice dell'array della lista attuale in Notelists.
+  current_list: number = 0;
   //il contenuto principale della nota creata dall'utente.
   newNote: string = '';
   //il contenuto principale del template per le note create dall'utente.
   newNoteTemplate: string = '';
+  //Il nuovo nome della lista creata dall'utente.
+  newList: string = '';
   // ID della nota che stiamo modificando
-  editNoteId: number | null = null; 
+  editNoteId: number | null = null;
+  // ID della lista di note che stiamo modificando
+  editNoteListId: number | null = null; 
   // Testo della nota che stiamo modificando
-  editNoteText: string = ''; 
+  editNoteText: string = '';
+  // Testo del nome della lista che stiamo modificando
+  editNameNoteText: string = '';
+   
   // Variabile per tracciare l'ordine di ordinamento
   isAscendingOrder: boolean = false;
   // Variabile per tracciare l'ordine alfabetico
   isAlphabeticalOrder: boolean = false;
-  // Aggiungi questa proprietà per gestire la visibilità del modale
-  isModalVisible: boolean = false;
+  // Gestisce la visibilità del modale per cancellare una nota
   isModalVisible_cancel: boolean = false;
+  // Gestisce la visibilità del modale per cancellare una lista di note
+  isModalVisible_cancelList: boolean = false;
+  // Contiene l'ID della nota da eliminare
   noteIdToDelete: number | null = null;
 
-  openModal() {
-    this.isModalVisible = true;
-  }
-
-  closeModal() {
-    this.isModalVisible = false;
-  }
-
-  openModal_cancel(id: number) {
+  openModal_cancel(id: number) 
+  {
     this.isModalVisible_cancel = true;
     this.noteIdToDelete = id; 
   }
@@ -77,12 +78,34 @@ export class TodoComponent implements OnInit {
     this.noteIdToDelete = null;
   }
 
+  openModal_cancelList() 
+  {
+    this.isModalVisible_cancelList = true;
+  }
+
+  closeModal_cancelList() {
+    this.isModalVisible_cancelList = false;
+  }
+
   //carichiamo tutte le informazioni presenti in LocalStorage appena viene caricato.
   ngOnInit() 
   {
     this.loadTodos();
   }
 
+  addListNote() {
+    if (this.newList.trim() !== '') {
+      const newNoteList: NoteList = {
+        list_id: Date.now(),
+        name: this.newList,
+        noteData: [] // Inizializza come array vuoto
+      };
+      
+      this.noteLists.push(newNoteList);
+      this.newList = ''; // Reset del campo input
+      this.saveTodos();
+    }
+  }
   //aggiungi una nota nel LocalStorage e nella variabile che contiene le informazioni da visualizzare a schermo.
   addNote() {
     //verifichiamo se l'utente ha inserito in almeno dei due campi una stringa valida da aggiungere alla lista
@@ -92,9 +115,7 @@ export class TodoComponent implements OnInit {
         id: Date.now(),
         note: this.newNoteTemplate + this.newNote
       };
-      //vecchio e attuale metodo per inserire i dati
-      this.todos.push(newTodo);
-      //futuro metodo per inserire i dati
+      //inseriamo i dati
       this.noteLists[this.current_list].noteData.push(newTodo);
       //svuotiamo il campo
       this.newNote = '';
@@ -108,22 +129,56 @@ export class TodoComponent implements OnInit {
   {
     if(this.noteIdToDelete !== null)
     {
-      this.todos = this.todos.filter(todo => todo.id !== this.noteIdToDelete);
+      this.noteLists[this.current_list].noteData = this.noteLists[this.current_list].noteData.filter(todo => todo.id !== this.noteIdToDelete);
       this.saveTodos();
     }
     
   }
 
+  //questa funzione genera un nuovo array senza la lista con l'id passato e salva la cancellazione di essa.
+  deleteNoteList() 
+  {
+    
+    if(this.current_list !== null)
+    {
+      let list_idToDelete : number = this.noteLists[this.current_list].list_id;
+      this.noteLists = this.noteLists.filter(todo => todo.list_id !== list_idToDelete);
+      this.current_list = -1;
+      this.saveTodos();
+    }
+  }
+
   //settiamo il necessario per modificare l'interfaccia e modificare una nota dopo averla immessa
   editNote(todo: Todo) {
+    
     this.editNoteId = todo.id;
     this.editNoteText = todo.note;
+  }
+
+  //indica che stiamo modificando una lista settando l'id di essa.
+  editNameList()
+  {
+    this.editNoteListId = this.current_list;
+  }
+
+  confirmNameList()
+  {
+    this.noteLists[this.current_list].name = this.editNameNoteText;
+    this.cancelEditNameList();
+    this.editNameNoteText = "";
+    this.saveTodos();
+  }
+
+  cancelEditNameList()
+  {
+    this.editNoteListId = null;
+    this.editNameNoteText = "";
   }
 
   //salviamo una nota in LocalStorage
   saveNote() {
     if (this.editNoteId !== null) {
-      const todo = this.todos.find(todo => todo.id === this.editNoteId);
+      const todo = this.noteLists[this.current_list].noteData.find(todo => todo.id === this.editNoteId);
       if (todo) {
         todo.note = this.editNoteText;
         this.saveTodos();
@@ -133,13 +188,30 @@ export class TodoComponent implements OnInit {
     }
   }
 
+  //funzione che prende l'id della lista nella quale vogliamo operare dal bottone premuto dall'utente
+  changeListId(id: number)
+  {
+    //imposta la variabile convertendo l'id della lista con l'indice dove si trova l'id passato (se presente)
+    this.current_list = this.noteLists.findIndex(list => list.list_id === id);
+    
+    //verifichiamo la effettiva presenza anche con un check con console.log
+    if (this.current_list !== -1) 
+    {
+        console.log(`La lista è alla posizione: ${this.current_list}`);
+    } else 
+    {
+        console.log('Lista non trovata');
+    }
+
+  }
+
   sortNoteAscending()
   {
     // Ordina le note in base alla variabile isAscendingOrder
     if (this.isAscendingOrder) {
-      this.todos.sort((a, b) => a.id - b.id);
+      this.noteLists[this.current_list].noteData.sort((a, b) => a.id - b.id);
     } else {
-      this.todos.sort((a, b) => b.id - a.id);
+      this.noteLists[this.current_list].noteData.sort((a, b) => b.id - a.id);
     }
 
     // Inverti lo stato per la prossima chiamata
@@ -149,9 +221,9 @@ export class TodoComponent implements OnInit {
   sortNoteAlphabetically() {
     // Ordina le note in base alla variabile isAlphabeticalOrder
     if (this.isAlphabeticalOrder) {
-      this.todos.sort((a, b) => a.note.localeCompare(b.note));
+      this.noteLists[this.current_list].noteData.sort((a, b) => a.note.localeCompare(b.note));
     } else {
-      this.todos.sort((a, b) => b.note.localeCompare(a.note));
+      this.noteLists[this.current_list].noteData.sort((a, b) => b.note.localeCompare(a.note));
     }
   
     // Inverti lo stato per la prossima chiamata
@@ -166,18 +238,14 @@ export class TodoComponent implements OnInit {
   }
 
   saveTodos() {
-    localStorage.setItem('todos', JSON.stringify(this.todos));
+    //salviamo i dati
     localStorage.setItem('noteLists', JSON.stringify(this.noteLists));
   }
 
   loadTodos() {
-    //variabile corrente dove ci sono i dati
-    const savedTodos = localStorage.getItem('todos');
-    //variabile futura dove raccoglieremo i dati
+    //variabile dove raccogliamo i dati
     const savedNoteLists = localStorage.getItem('noteLists');
-    if (savedTodos) {
-      this.todos = JSON.parse(savedTodos);
-    }
+   
     if (savedNoteLists) {
       this.noteLists = JSON.parse(savedNoteLists);
     }

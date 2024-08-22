@@ -1,13 +1,35 @@
-<div class="">
+<div>
   <h1 class="text-5xl font-bold text-custom-white px-5 pt-5">Notepastr</h1>
-
-  <button (click)="openModal()">Apri Modale</button>
   
-  
-  <!-- Inserisci il componente modale -->
-  <app-modal [isVisible]="isModalVisible" (close)="closeModal()"></app-modal>
+  <!-- Inizio creazione modali creati dal componente modal -->
   <app-modal [isVisible_cancel]="isModalVisible_cancel" (confirmDelete)="deleteNote()" (close)="closeModal_cancel()"></app-modal>
+  <app-modal [isVisible_cancelList]="isModalVisible_cancelList" (confirmDelete)="deleteNoteList()" (close)="closeModal_cancelList()"></app-modal>
+  <!-- Fine creazione modali creati dal componente modal -->
+
   <div class="p-5">
+
+    <!-- Inizio blocco di codice dove si digita il nome di una lista e la si crea -->
+    <div>
+      <input [(ngModel)]="newList" placeholder="Inserisci il nome della lista" class="border-custom-blue border-2 bg-custom-black text-custom-white p-1" />
+    </div>
+
+    <div>
+      <button (click)="addListNote()" class="border-custom-blue border-2 bg-custom-purple p-2">Aggiungi Lista</button>
+    </div>
+    <!-- Fine blocco di codice dove si digita il nome di una lista e la si crea -->
+
+    <!-- Inizio blocco di codice dove si visualizzano le liste create e si può cambiare quella corrente -->
+    @if(noteLists.length > 0)
+    {
+      <p class="text-3xl text-custom-white pt-5">Liste create</p>
+      @for(todo of noteLists; track todo.list_id)
+      {
+        <button (click)="changeListId(todo.list_id)" class="border-custom-blue border-2 bg-custom-purple p-2 mr-2">{{todo.name}}</button>
+      }
+    }
+    <!-- Fine blocco di codice dove si visualizzano le liste create e si può cambiare quella corrente -->
+
+    <!-- Inizio blocco di codice dove si creano nuove note nella lista attuale -->
     <div>
       <input [(ngModel)]="newNoteTemplate" placeholder="Inserisci la base delle prossime note" class="border-custom-blue border-2 bg-custom-black text-custom-white p-1" />
     </div>
@@ -16,40 +38,80 @@
     </div>
     <div>
       <button (click)="addNote()" class="border-custom-blue border-2 bg-custom-purple p-2">Aggiungi Nota</button>
+      <!-- Inizio blocco di codice dove si trovano i filtri per ordinare le note -->
       <button (click)="sortNoteAscending()" class="mx-2 border-custom-blue border-2 bg-custom-purple p-2" >Visualizza le note {{isAscendingOrder ? 'più recenti' : 'meno recenti'}}</button>
       <button (click)="sortNoteAlphabetically()" class="mx-2 border-custom-blue border-2 bg-custom-purple p-2" >Visualizza le note {{isAscendingOrder ? 'dalla A-Z' : 'dalla Z-A'}}</button>
+      <!-- Fine blocco di codice dove si trovano i filtri per ordinare le note -->
     </div>
   </div>
- 
-  <h1 class="text-3xl p-5">Note</h1>
+    <!-- Fine blocco di codice dove si creano nuove note nella lista attuale -->
 
-  <ul>
-    @for(todo of todos; track todo.id)
+  <!-- Inizio blocco di codice dove si visualizza il nome della lista corrente e la possibilità di modificare e eliminare la lista -->
+  @if(this.current_list >= 0)
+  {
+    <!-- Inizio blocco di codice che viene visualizzato se l'utente sta modificando il nome di una lista -->
+    @if(editNoteListId !== this.current_list)
     {
-      <li>
-        @if(editNoteId !== todo.id)
-        {
-          <div class="border-custom-blue border-2 my-2">
-            <span>{{ todo.note }}</span>
-            <div>
-              <button (click)="copyToClipboard(todo.note)" class="border-custom-blue border-2 bg-custom-purple p-2 mx-2">Copia</button>
-              <button (click)="editNote(todo)" class="border-custom-blue border-2 bg-custom-purple p-2 mx-2">Modifica</button>
-              <button (click)="openModal_cancel(todo.id)" class="border-custom-blue border-2 bg-custom-purple p-2 mx-2">Cancella</button>
-            </div>
-          </div>
-        }
-        
-        @if(editNoteId === todo.id)
-        {
-        <div>
-          <input [(ngModel)]="editNoteText" class="border-custom-blue border-2 bg-custom-black text-custom-white p-1" />
-          <button (click)="saveNote()" class="border-custom-blue border-2 bg-custom-purple p-2 mx-2">Salva</button>
-          <button (click)="editNoteId = null" class="border-custom-blue border-2 bg-custom-purple p-2 mx-2">Annulla</button>
-        </div>
-        }
-      </li>
+      <div>
+        <h1 class="text-3xl p-5">Lista {{this.noteLists[current_list].name}}</h1>
+      </div>
+      
+      <div>
+        <button (click)="editNameList()" class="border-custom-blue border-2 bg-custom-purple p-2 ml-5">Modifica nome lista</button>
+        <button (click)="openModal_cancelList()" class="border-custom-blue border-2 bg-custom-purple p-2 mx-2">Cancella</button>
+      </div>
     }
-    
-  </ul>
-</div>
+    <!-- Fine blocco di codice che viene visualizzato se l'utente sta modificando il nome di una lista -->
 
+    <!-- Inizio blocco di codice che viene visualizzato se l'utente sta modificando una nota -->
+    @if(editNoteListId === this.current_list)
+    {
+
+      <div>
+        <h1 class="text-3xl p-5"><input [(ngModel)]="editNameNoteText" placeholder="Inserisci il nuovo nome di questa lista" class="border-custom-blue border-2 bg-custom-black text-custom-white p-1" /></h1>
+      </div>
+      
+      <div>
+        <button (click)="confirmNameList()" class="border-custom-blue border-2 bg-custom-purple p-2 mx-5">Conferma nuovo nome</button>
+        <button (click)="cancelEditNameList()" class="border-custom-blue border-2 bg-custom-purple p-2 mx-2">Cancella</button>
+      </div>
+    }
+    <!-- Inizio blocco di codice che viene visualizzato se l'utente sta modificando una nota -->
+  }
+  <!-- Fine blocco di codice dove si visualizza il nome della lista corrente e la possibilità di modificare e eliminare la lista -->
+
+  <!-- Inizio blocco di codice dove si visualizzano le note presenti nella lista -->
+  <ul>
+    @if(this.current_list >= 0)
+    {
+      @for(todo of noteLists[current_list].noteData; track todo.id)
+      {
+        <li>
+          <!-- Inizio blocco di codice che viene visualizzato se l'utente sta modificando una nota -->
+          @if(editNoteId !== todo.id)
+          {
+            <div class="border-custom-blue border-2 my-2">
+              <span>{{ todo.note }}</span>
+              <div>
+                <button (click)="copyToClipboard(todo.note)" class="border-custom-blue border-2 bg-custom-purple p-2 mx-2">Copia</button>
+                <button (click)="editNote(todo)" class="border-custom-blue border-2 bg-custom-purple p-2 mx-2">Modifica</button>
+                <button (click)="openModal_cancel(todo.id)" class="border-custom-blue border-2 bg-custom-purple p-2 mx-2">Cancella</button>
+              </div>
+            </div>
+          }
+          <!-- Fine blocco di codice che viene visualizzato se l'utente sta modificando una nota -->
+
+          @if(editNoteId === todo.id)
+          {
+          <div>
+            <input [(ngModel)]="editNoteText" class="border-custom-blue border-2 bg-custom-black text-custom-white p-1" />
+            <button (click)="saveNote()" class="border-custom-blue border-2 bg-custom-purple p-2 mx-2">Salva</button>
+            <button (click)="editNoteId = null" class="border-custom-blue border-2 bg-custom-purple p-2 mx-2">Annulla</button>
+          </div>
+          }
+        </li>
+      }
+    }
+  </ul>
+  <!-- Fine blocco di codice dove si visualizzano le note presenti nella lista -->
+</div>

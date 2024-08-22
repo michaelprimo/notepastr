@@ -1,15 +1,15 @@
-<div class="modal" *ngIf="isVisible">
-  <div class="modal-content">
-    <p>aaaaaaaaaaaaaaaaaaaa</p>
-    <span class="close" (click)="closeModal()">×</span>
-    <ng-content></ng-content>
-  </div>
-</div>
-
 <div class="modal" *ngIf="isVisible_cancel">
   <div class="border-custom-blue border-2 bg-custom-black p-8">
     <p>Vuoi veramente cancellare questa nota?</p>
     <button (click)="confirmAndClose()" class="border-custom-blue border-2 bg-custom-purple p-2">Conferma Cancellazione</button>
     <button (click)="closeModal_cancel()" class="border-custom-blue border-2 bg-custom-purple p-2 mx-2">Annulla</button>
+  </div>
+</div>
+
+<div class="modal" *ngIf="isVisible_cancelList">
+  <div class="border-custom-blue border-2 bg-custom-black p-8">
+    <p>Vuoi veramente cancellare questa lista di note?</p>
+    <button (click)="confirmAndClose()" class="border-custom-blue border-2 bg-custom-purple p-2">Conferma Cancellazione</button>
+    <button (click)="closeModal_cancelList()" class="border-custom-blue border-2 bg-custom-purple p-2 mx-2">Annulla</button>
   </div>
 </div>
